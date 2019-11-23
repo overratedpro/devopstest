@@ -1,12 +1,14 @@
 .virtualenv:
 	@python3 -m venv $@
-	@echo 'Now install python libs with: "make requirements"'
+	@echo 'Now install python libs and galaxy roles with: "make requirements"'
 
 requirements: .virtualenv
-	@. .virtualenv/bin/activate && pip3 install -r requirements.txt
+	@. .virtualenv/bin/activate \
+		&& pip3 install -r requirements.txt \
+		&& ansible-galaxy install -r galaxy_requirements.yml
 
 ubuntu:
-	@vagrant up
+	@vagrant up --provision
 
 clean:
 	@-vagrant destroy -f

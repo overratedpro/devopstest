@@ -1,0 +1,42 @@
+- hosts: ubuntu
+
+  vars:
+    pip_install_packages:
+      - name: docker
+
+  pre_tasks:
+    - block:
+
+      - filesystem:
+          dev: /dev/sdc
+          fstype: ext4
+
+      - mount:
+          fstype: ext4
+          path: /var/lib/docker
+          src: /dev/sdc
+          state: mounted
+
+      become: yes
+
+  roles:
+    - role: jonathanio.users
+      become: yes
+      vars:
+        user_users:
+          - name: "{{ provision_user_name }}"
+            ssh_keys:
+              - key: "{{ provision_user_ssk_key.split(' ')[1] }}"
+                type: ssh-rsa
+            sudo: custom
+            sudo_custom:
+              - command_line: ALL
+                name: "{{ provision_user_name }}"
+                nopasswd: yes
+    - role: geerlingguy.pip
+      become: yes
+    - role: geerlingguy.docker
+      become: yes
+      vars:
+        docker_users:
+          - "{{ provision_user_name }}"
