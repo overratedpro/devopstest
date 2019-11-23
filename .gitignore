@@ -1,3 +1,4 @@
 /.vagrant/
 /.virtualenv/
 /disks/
+/*.log

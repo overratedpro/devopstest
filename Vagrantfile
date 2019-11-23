@@ -1,9 +1,11 @@
 require 'json'
 
 
-ANSIBLE_PLAYBOOK     = ENV['provision_ansible_playbook'] || ""
-ANSIBLE_USER         = ENV['USER']
-SSH_PUBFILE          = File.read("#{Dir.home}/.ssh/id_rsa.pub")
+ANSIBLE_EXTRA_VARS   = {
+    'provision_user_name'    => ENV['USER'],
+    'provision_user_ssk_key' => File.read("#{Dir.home}/.ssh/id_rsa.pub"),
+}
+ANSIBLE_PLAYBOOK     = ENV['ANSIBLE_PLAYBOOK'] || ''
 VM_APPDATA_DISK_FILE = "./disks/hdx_appdata.vdi"
 VM_APPDATA_DISK_SIZE = 2 * 1024
 VM_GUI_ENABLED       = (ENV['VM_GUI_ENABLED'] || "") != ""
@@ -14,8 +16,8 @@ def ansible_provision(vm)
         ansible.groups = {
             "test_hosts" => ["ubuntu"]
         }
-        ansible.playbook = "ansible/playbooks/" + ANSIBLE_PLAYBOOK
-        ansible.raw_arguments = ["--extra-vars", "{\"vagrant_extra_vars\": " + ANSIBLE_EXTRA_VARS.to_json + "}", "-vv", "--diff"]
+        ansible.playbook = "playbooks/" + ANSIBLE_PLAYBOOK
+        ansible.raw_arguments = ["--extra-vars", ANSIBLE_EXTRA_VARS.to_json, "-vv", "--diff"]
     end
 end
 
@@ -35,16 +37,6 @@ Vagrant.configure("2") do |config|
     config.vm.boot_timeout = 300
     config.vm.network "forwarded_port", guest: 22, host: 2222, host_ip: "127.0.0.1", id: 'ssh'
 
-    config.vm.provision "configure account", type: "shell", privileged: true,
-        inline: "mkdir -p /home && useradd -U -m -d /home/$1 -G sudo $1",
-        args: [ANSIBLE_USER]
-    config.vm.provision "prepare ssh config directory", type: "shell", privileged: true,
-        inline: "mkdir -p /home/$1/.ssh",
-        args: [ANSIBLE_USER]
-    config.vm.provision "copy ssh public key", type: "shell", privileged: true,
-        inline: "echo $1 | tee -a /home/$2/.ssh/authorized_keys",
-        args: [SSH_PUBFILE, ANSIBLE_USER]
-
     config.vm.define "ubuntu" do |ubuntu|
 
         ubuntu.vm.box = "ubuntu/bionic64"
@@ -60,7 +52,7 @@ Vagrant.configure("2") do |config|
         ubuntu.vm.provision "install packages", type: "shell", privileged: true,
             inline: "apt -q update && apt -q install -y ansible sudo"
 
-        # ansible_provision(ubuntu.vm)
+        ansible_provision(ubuntu.vm)
 
     end
 
