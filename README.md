@@ -4,6 +4,7 @@
 
 - Direnv
 - Vagrant
+- Virtualbox
 
 ### setup
 
