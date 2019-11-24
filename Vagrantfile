@@ -49,9 +49,6 @@ Vagrant.configure("2") do |config|
                                  "--type", "hdd", "--medium", VM_APPDATA_DISK_FILE]
         end
 
-        ubuntu.vm.provision "install packages", type: "shell", privileged: true,
-            inline: "apt -q update && apt -q install -y ansible sudo"
-
         ansible_provision(ubuntu.vm)
 
     end

@@ -7,6 +7,9 @@
   pre_tasks:
     - block:
 
+      - apt:
+          update_cache: yes
+
       - filesystem:
           dev: /dev/sdc
           fstype: ext4
