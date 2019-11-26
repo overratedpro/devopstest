@@ -3,7 +3,7 @@ require 'json'
 
 ANSIBLE_EXTRA_VARS   = {
     'provision_user_name'    => ENV['USER'],
-    'provision_user_ssk_key' => File.read("#{Dir.home}/.ssh/id_rsa.pub"),
+    'provision_user_ssh_key' => File.read("#{Dir.home}/.ssh/id_rsa.pub"),
 }
 ANSIBLE_PLAYBOOK     = ENV['ANSIBLE_PLAYBOOK'] || ''
 VM_APPDATA_DISK_FILE = "./disks/hdx_appdata.vdi"
