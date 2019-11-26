@@ -12,6 +12,6 @@ ubuntu:
 
 clean:
 	@-vagrant destroy -f
-	@-rm -fr .virtualenv
+	@-rm -fr .virtualenv /tmp/.galaxy_roles
 
 .PHONY: requirements ubuntu clean
