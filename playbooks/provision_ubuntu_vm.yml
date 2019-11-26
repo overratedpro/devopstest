@@ -29,7 +29,7 @@
         user_users:
           - name: "{{ provision_user_name }}"
             ssh_keys:
-              - key: "{{ provision_user_ssk_key.split(' ')[1] }}"
+              - key: "{{ provision_user_ssh_key.split(' ')[1] }}"
                 type: ssh-rsa
             sudo: custom
             sudo_custom:
