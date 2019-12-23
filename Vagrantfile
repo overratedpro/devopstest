@@ -5,7 +5,7 @@ ANSIBLE_EXTRA_VARS   = {
     'provision_user_name'    => ENV['USER'],
     'provision_user_ssh_key' => File.read("#{Dir.home}/.ssh/id_rsa.pub"),
 }
-ANSIBLE_PLAYBOOK     = ENV.fetch('ANSIBLE_PLAYBOOK', '') + '.yml'
+ANSIBLE_PLAYBOOK     = ENV.fetch('ANSIBLE_PLAYBOOK', '')
 VM_APPDATA_DISK_FILE = './disks/hdx_appdata.vdi'
 VM_APPDATA_DISK_SIZE = 2 * 1024
 VM_GUI_ENABLED       = ENV.fetch('VM_GUI_ENABLED', '') != ''
@@ -16,7 +16,7 @@ def ansible_provision(vm)
         ansible.groups = {
             "test_hosts" => ["ubuntu"]
         }
-        ansible.playbook = "playbooks/" + ANSIBLE_PLAYBOOK
+        ansible.playbook = "playbooks/" + ANSIBLE_PLAYBOOK + ".yml"
         ansible.raw_arguments = ["--extra-vars", ANSIBLE_EXTRA_VARS.to_json, "-vv", "--diff"]
     end
 end
