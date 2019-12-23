@@ -3,6 +3,8 @@
 ### reqs
 
 - Direnv
+- Docker
+- Packer
 - Vagrant
 - Virtualbox
 
@@ -10,5 +12,5 @@
 
 ```bash
 direnv allow
-make requirements ubuntu
+make requirements images ubuntu
 ```

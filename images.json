@@ -1,0 +1,41 @@
+{
+
+    "variables": {
+        "extra_args_json": "{}",
+        "playbook": null
+    },
+
+    "builders": [{
+        "type": "docker",
+        "image": "ubuntu:bionic",
+        "commit": true,
+        "privileged": false,
+        "changes": [
+            "CMD tail -F /dev/null"
+        ],
+        "run_command": [
+            "-d", "-i", "-t", "--name", "default", "{{.Image}}", "/bin/bash"
+        ]
+    }],
+
+    "provisioners": [{
+        "type": "ansible",
+        "groups": "ubuntu",
+        "ansible_env_vars": [
+            "PYTHONUNBUFFERED=1"
+        ],
+        "extra_arguments": [
+            "-v",
+            "--diff",
+            "--extra-vars", "{{ user `extra_args_json` }}"
+        ],
+        "playbook_file": "{{template_dir}}/playbooks/{{ user `playbook` }}.yml"
+    }],
+
+    "post-processors": [[{
+            "type": "docker-tag",
+            "repository": "127.0.0.1:5000/devopstest/{{ user `playbook` }}",
+            "tag": "latest"
+    }]]
+
+}

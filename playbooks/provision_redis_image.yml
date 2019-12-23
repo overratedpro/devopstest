@@ -1,0 +1,12 @@
+- hosts: ubuntu
+  gather_facts: no
+
+  pre_tasks:
+    - raw: >-
+        apt update -qq && apt install -y python3
+    - setup:
+
+  roles:
+    - role: davidwittman.redis
+      vars:
+        - redis_bind: 127.0.0.1

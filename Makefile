@@ -7,6 +7,9 @@ requirements: .virtualenv
 		&& pip3 install -r requirements.txt \
 		&& ansible-galaxy install -r galaxy_requirements.yml
 
+images:
+	@packer build -var playbook=provision_redis_image images.json
+
 ubuntu:
 	@vagrant up --provision
 
@@ -14,4 +17,4 @@ clean:
 	@-vagrant destroy -f
 	@-rm -fr .virtualenv /tmp/.galaxy_roles
 
-.PHONY: requirements ubuntu clean
+.PHONY: requirements images ubuntu clean
